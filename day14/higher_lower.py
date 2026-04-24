@@ -69,5 +69,4 @@ def main():
             score += 1
     print(f"your final score is {score}")
 
-
 main()
