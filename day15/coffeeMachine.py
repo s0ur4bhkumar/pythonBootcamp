@@ -60,13 +60,14 @@ def check_resouces(name):
                 return resources[key] >= MENU[name]["ingredients"][i]
 
 
-def manage_resources(name):
+def manage_resources(name, total):
     global resources
 
     for key in resources:
         for i in MENU[name]["ingredients"]:
             if i == key:
                 resources[key] -= MENU[name]["ingredients"][i]
+    resources["revenue"] = total
 
 
 def main():
@@ -89,7 +90,7 @@ def main():
                     print(
                         "here is the change", round(total - MENU[user_input]["cost"], 2)
                     )
-                manage_resources(user_input)
+                manage_resources(user_input, MENU[user_input]["cost"])
                 print(f"here is your {user_input}, enjoy")
             else:
                 print("not enough money, money refunded")
