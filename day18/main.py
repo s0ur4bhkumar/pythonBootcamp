@@ -62,16 +62,14 @@ def spiral():
 
 
 def art():
+    timmy.ht()
     for i in range(1, 10):
         timmy.penup()
         timmy.setposition(0, i * 30)
         for _ in range(1, 11):
-            timmy.fillcolor(random.choice(color_list))
             timmy.pendown()
             timmy.speed("fastest")
-            timmy.begin_fill()
-            timmy.circle(10)
-            timmy.end_fill()
+            timmy.dot(20, random.choice(color_list))
             timmy.penup()
             timmy.forward(30)
 
