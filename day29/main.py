@@ -1,3 +1,4 @@
+import json
 import random
 import tkinter as tk
 from tkinter import messagebox
@@ -89,24 +90,41 @@ def add_credentials():
     website = website_entry
     email = email_entry
     password = password_entry
+    new_data = {website.get(): {"email": email.get(), "password": password.get()}}
+    data = None
 
-    if len(website.get()) == 0 or len(password.get()) == 0 or len(email.get()):
+    if len(website.get()) == 0 or len(password.get()) == 0 or len(email.get()) == 0:
         messagebox.showinfo(title="Empty fields", message="Please fill all fields")
     else:
-        is_ok = messagebox.askokcancel(
-            title=website.get(),
-            message=f"These are the  details entered: \n Email: {email.get()} \n password: {password.get()}\n Is it ok to save",
-        )
-
-        if is_ok:
-            with open("./day29/credential.txt", mode="a") as credentials:
-                credentials.write(
-                    f"{website.get()} | {email.get()} | {password.get()}\n"
-                )
-
+        try:
+            with open("./day29/credential.json", mode="r") as credentials:
+                data = json.load(credentials)
+        except FileNotFoundError:
+            with open("./day29/credential.json", mode="w") as credentials:
+                json.dump(new_data, credentials, indent=4)
+        else:
+            data = json.load(credentials)
+            with open("./day29/credential.json", mode="w") as credentials:
+                data.update(new_data)
+                json.dump(data, credentials, indent=4)
+        finally:
             website.delete(0, tk.END)
             email.delete(0, tk.END)
             password.delete(0, tk.END)
+
+
+# ----------------------------Search--------------------------------------------- #
+def Search():
+    try:
+        with open("./day29/credential.json", mode="r") as credentials:
+            data = json.load(credentials)
+    except FileNotFoundError:
+        messagebox.showinfo(message="file not found")
+    else:
+        result = data[website_entry.get()]
+        messagebox.showinfo(
+            message=f"email:{result['email']}\n password:{result['password']}"
+        )
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -119,7 +137,7 @@ canvas = tk.Canvas(background="black", width=200, height=200, highlightthickness
 canvas.grid(column=1, row=0)
 logo = tk.PhotoImage(file="./day29/logo.png")
 canvas.create_image(100, 100, image=logo)
-entry_border_color = tk.Frame(window, background="purple")
+
 website_label = tk.Label(
     text="website: ", fg="cyan", bg="black", font=("arial", 15, "normal")
 )
@@ -134,10 +152,21 @@ website_entry = tk.Entry(
     insertbackground="cyan",
 )
 website_entry.grid(column=1, row=1, columnspan=2)
+search_btn = tk.Button(
+    text="Search",
+    highlightbackground="cyan",
+    highlightcolor="cyan",
+    highlightthickness=0,
+    background="black",
+    foreground="blue",
+    width=13,
+    command=Search,
+)
+search_btn.grid(column=2, row=1)
+
 email_label = tk.Label(
     text="email/username: ", fg="cyan", bg="black", font=("arial", 15, "normal")
 )
-
 email_label.grid(column=0, row=2)
 email_entry = tk.Entry(
     highlightthickness=2,
@@ -149,6 +178,7 @@ email_entry = tk.Entry(
     insertbackground="cyan",
 )
 email_entry.grid(column=1, row=2, columnspan=2)
+
 password_label = tk.Label(
     text="password: ", fg="cyan", bg="black", font=("arial", 15, "normal")
 )
