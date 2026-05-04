@@ -9,4 +9,5 @@ dependencies = [
     "pandas>=3.0.2",
     "prettytable>=3.17.0",
     "pyperclip>=1.11.0",
+    "requests>=2.33.1",
 ]
